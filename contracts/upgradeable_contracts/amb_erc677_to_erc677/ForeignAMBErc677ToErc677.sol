@@ -3,6 +3,7 @@ pragma solidity 0.4.24;
 import "./BasicAMBErc677ToErc677.sol";
 import "../../libraries/SafeERC20.sol";
 import "../MediatorBalanceStorage.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 /**
 * @title ForeignAMBErc677ToErc677
@@ -11,6 +12,9 @@ import "../MediatorBalanceStorage.sol";
 */
 contract ForeignAMBErc677ToErc677 is BasicAMBErc677ToErc677, MediatorBalanceStorage {
     using SafeERC20 for ERC677;
+    using SafeMath for uint256; 
+
+    uint256 internal constant FEE_PRECISION = 1000;
 
     /**
      * @dev Executes action on the request to withdraw tokens relayed from the other network
@@ -43,9 +47,22 @@ contract ForeignAMBErc677ToErc677 is BasicAMBErc677ToErc677, MediatorBalanceStor
         addTotalSpentPerDay(getCurrentDay(), _value);
 
         setLock(true);
+
+        address feeAccount = transferFeeAccount();
+        uint256 feePercent = transferFeePercent();
+
+        uint256 feeAmount;
+        if (feeAccount != address(0) && feePercent > 0) {
+            feeAmount = _value.mul(feePercent).div(FEE_PRECISION*100);            
+        }
+
         token.safeTransferFrom(msg.sender, _value);
+        if (feeAmount > 0) {
+            token.safeTransfer(feeAccount, feeAmount);
+        } 
+
         setLock(false);
-        bridgeSpecificActionsOnTokenTransfer(token, msg.sender, _value, abi.encodePacked(_receiver));
+        bridgeSpecificActionsOnTokenTransfer(token, msg.sender, _value.sub(feeAmount), abi.encodePacked(_receiver));
     }
 
     /**

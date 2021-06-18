@@ -30,7 +30,13 @@ const {
   FOREIGN_MEDIATOR_REQUEST_GAS_LIMIT,
   ERC20_TOKEN_ADDRESS,
   DEPLOYMENT_ACCOUNT_PRIVATE_KEY,
-  FOREIGN_TO_HOME_DECIMAL_SHIFT
+  FOREIGN_TO_HOME_DECIMAL_SHIFT,
+  HOME_CHAIN_ID,
+  FOREIGN_CHAIN_ID,
+  HOME_TRANSFER_FEE_ACCOUNT,
+  HOME_TRANSFER_FEE_PERCENT,
+  FOREIGN_TRANSFER_FEE_ACCOUNT,
+  FOREIGN_TRANSFER_FEE_PERCENT
 } = require('../loadEnv')
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -52,10 +58,13 @@ async function initialize({
     executionMaxPerTx,
     requestGasLimit,
     foreignToHomeDecimalShift,
-    owner
+    owner,
+    transferFeePercent,
+    transferFeeAccount
   },
   upgradeableAdmin,
-  sendRawTx
+  sendRawTx,
+  chainId
 }) {
   let nonce = await web3.eth.getTransactionCount(DEPLOYMENT_ACCOUNT_ADDRESS)
 
@@ -71,7 +80,9 @@ async function initialize({
     EXECUTION_MAX_AMOUNT_PER_TX: ${executionMaxPerTx} which is ${Web3Utils.fromWei(executionMaxPerTx)} in eth,
     FOREIGN_TO_HOME_DECIMAL_SHIFT: ${foreignToHomeDecimalShift},
     MEDIATOR_REQUEST_GAS_LIMIT : ${requestGasLimit}, 
-    OWNER: ${owner}
+    OWNER: ${owner},
+    TRANSFER_FEE_PERCENT: ${transferFeePercent},
+    TRANSFER_FEE_ACCOUNT: ${transferFeeAccount}
   `)
 
   const initializeData = await contract.methods
@@ -83,7 +94,9 @@ async function initialize({
       [executionDailyLimit.toString(), executionMaxPerTx.toString()],
       requestGasLimit,
       foreignToHomeDecimalShift,
-      owner
+      owner,
+      transferFeePercent,
+      transferFeeAccount
     )
     .encodeABI()
   const txInitialize = await sendRawTx({
@@ -91,7 +104,8 @@ async function initialize({
     nonce,
     to: address,
     privateKey: deploymentPrivateKey,
-    url
+    url,
+    chainId
   })
 
   if (txInitialize.status) {
@@ -107,7 +121,8 @@ async function initialize({
     proxy,
     newOwner: upgradeableAdmin,
     nonce,
-    url
+    url,
+    chainId
   })
 }
 
@@ -132,10 +147,13 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       executionMaxPerTx: FOREIGN_MAX_AMOUNT_PER_TX,
       requestGasLimit: HOME_MEDIATOR_REQUEST_GAS_LIMIT,
       foreignToHomeDecimalShift,
-      owner: HOME_BRIDGE_OWNER
+      owner: HOME_BRIDGE_OWNER,
+      transferFeePercent: HOME_TRANSFER_FEE_PERCENT,
+      transferFeeAccount: HOME_TRANSFER_FEE_ACCOUNT
     },
     upgradeableAdmin: HOME_UPGRADEABLE_ADMIN,
-    sendRawTx: sendRawTxHome
+    sendRawTx: sendRawTxHome,
+    chainId: HOME_CHAIN_ID
   })
 
   console.log('\n[Foreign] Initializing Bridge Mediator with following parameters:\n')
@@ -156,10 +174,13 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       executionMaxPerTx: HOME_MAX_AMOUNT_PER_TX,
       requestGasLimit: FOREIGN_MEDIATOR_REQUEST_GAS_LIMIT,
       foreignToHomeDecimalShift,
-      owner: FOREIGN_BRIDGE_OWNER
+      owner: FOREIGN_BRIDGE_OWNER,
+      transferFeePercent: FOREIGN_TRANSFER_FEE_PERCENT,
+      transferFeeAccount: FOREIGN_TRANSFER_FEE_ACCOUNT
     },
     upgradeableAdmin: FOREIGN_UPGRADEABLE_ADMIN,
-    sendRawTx: sendRawTxForeign
+    sendRawTx: sendRawTxForeign,
+    chainId: FOREIGN_CHAIN_ID
   })
 }
 

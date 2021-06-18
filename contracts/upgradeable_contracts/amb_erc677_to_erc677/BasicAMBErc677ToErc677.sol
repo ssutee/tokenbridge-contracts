@@ -10,6 +10,8 @@ import "../Upgradeable.sol";
 import "../Claimable.sol";
 import "../VersionableBridge.sol";
 import "../TokenBridgeMediator.sol";
+import "../TransferFeeStorage.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 /**
 * @title BasicAMBErc677ToErc677
@@ -23,8 +25,13 @@ contract BasicAMBErc677ToErc677 is
     VersionableBridge,
     BaseOverdrawManagement,
     BaseERC677Bridge,
-    TokenBridgeMediator
+    TokenBridgeMediator,
+    TransferFeeStorage
 {
+    using SafeMath for uint256;
+
+    uint256 internal constant FEE_PRECISION = 1000;
+
     function initialize(
         address _bridgeContract,
         address _mediatorContract,
@@ -33,7 +40,9 @@ contract BasicAMBErc677ToErc677 is
         uint256[2] _executionDailyLimitExecutionMaxPerTxArray, // [ 0 = _executionDailyLimit, 1 = _executionMaxPerTx ]
         uint256 _requestGasLimit,
         int256 _decimalShift,
-        address _owner
+        address _owner,
+        uint256 _transferFeePercent,
+        address _transferFeeAccount
     ) public onlyRelevantSender returns (bool) {
         require(!isInitialized());
 
@@ -45,6 +54,8 @@ contract BasicAMBErc677ToErc677 is
         _setRequestGasLimit(_requestGasLimit);
         _setDecimalShift(_decimalShift);
         _setOwner(_owner);
+        _setTransferFeePercent(_transferFeePercent);
+        _setTransferFeeAccount(_transferFeeAccount);
         setInitialize();
 
         return isInitialized();
@@ -79,9 +90,21 @@ contract BasicAMBErc677ToErc677 is
         addTotalSpentPerDay(getCurrentDay(), _value);
 
         setLock(true);
+        address feeAccount = transferFeeAccount();
+        uint256 feePercent = transferFeePercent();
+        
+        uint256 feeAmount;
+        if (feeAccount != address(0) && feePercent > 0) {
+            feeAmount = _value.mul(feePercent).div(FEE_PRECISION*100);            
+        }
+        
         token.transferFrom(msg.sender, to, _value);
+        if (feeAmount > 0) {
+            token.transfer(feeAccount, feeAmount);
+        }
+
         setLock(false);
-        bridgeSpecificActionsOnTokenTransfer(token, msg.sender, _value, abi.encodePacked(_receiver));
+        bridgeSpecificActionsOnTokenTransfer(token, msg.sender, _value.sub(feeAmount), abi.encodePacked(_receiver));
     }
 
     function onTokenTransfer(address _from, uint256 _value, bytes _data) external returns (bool) {
