@@ -1,4 +1,4 @@
-const { web3Foreign, FOREIGN_RPC_URL } = require('../web3')
+const { web3Foreign, FOREIGN_RPC_URL, FOREIGN_CHAIN_ID } = require('../web3')
 const { deployContract, privateKeyToAddress, upgradeProxy } = require('../deploymentUtils')
 const {
   foreignContracts: { EternalStorageProxy, ForeignAMBErc677ToErc677: ForeignBridge }
@@ -34,7 +34,8 @@ async function deployForeign() {
     implementationAddress: foreignBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
 
   console.log('\nForeign part of ERC677-to-ERC677 bridge deployed\n')

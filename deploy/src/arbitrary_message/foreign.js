@@ -27,7 +27,8 @@ const {
   FOREIGN_VALIDATORS_OWNER,
   FOREIGN_UPGRADEABLE_ADMIN,
   FOREIGN_MAX_AMOUNT_PER_TX,
-  FOREIGN_REQUIRED_BLOCK_CONFIRMATIONS
+  FOREIGN_REQUIRED_BLOCK_CONFIRMATIONS,
+  FOREIGN_CHAIN_ID
 } = env
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -59,7 +60,8 @@ async function initializeBridge({ validatorsBridge, bridge, initialNonce }) {
     nonce,
     to: bridge.options.address,
     privateKey: deploymentPrivateKey,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   if (txInitializeBridge.status) {
     assert.strictEqual(Web3Utils.hexToNumber(txInitializeBridge.status), 1, 'Transaction Failed')
@@ -102,7 +104,8 @@ async function deployForeign() {
     implementationAddress: bridgeValidatorsForeign.options.address,
     version: '1',
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -116,7 +119,8 @@ async function deployForeign() {
     rewardAccounts: [],
     owner: FOREIGN_VALIDATORS_OWNER,
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -125,7 +129,8 @@ async function deployForeign() {
     proxy: storageValidatorsForeign,
     newOwner: FOREIGN_UPGRADEABLE_ADMIN,
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -153,7 +158,8 @@ async function deployForeign() {
     implementationAddress: foreignBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -170,7 +176,8 @@ async function deployForeign() {
     proxy: foreignBridgeStorage,
     newOwner: FOREIGN_UPGRADEABLE_ADMIN,
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
 
   console.log('\nDeployment of Arbitrary Message Bridge at Foreign completed\n')

@@ -11,7 +11,7 @@ const {
   transferProxyOwnership,
   assertStateWithRetry
 } = require('../deploymentUtils')
-const { web3Foreign, deploymentPrivateKey, FOREIGN_RPC_URL } = require('../web3')
+const { web3Foreign, deploymentPrivateKey, FOREIGN_RPC_URL, FOREIGN_CHAIN_ID } = require('../web3')
 const {
   foreignContracts: { EternalStorageProxy, BridgeValidators, ForeignBridgeErcToNative: ForeignBridge }
 } = require('../loadContracts')
@@ -74,7 +74,8 @@ async function initializeBridge({ validatorsBridge, bridge, nonce, homeBridgeAdd
     nonce,
     to: bridge.options.address,
     privateKey: deploymentPrivateKey,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   if (txInitializeBridge.status) {
     assert.strictEqual(Web3Utils.hexToNumber(txInitializeBridge.status), 1, 'Transaction Failed')
@@ -116,7 +117,8 @@ async function deployForeign(homeBridgeAddress) {
     implementationAddress: bridgeValidatorsForeign.options.address,
     version: '1',
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -130,7 +132,8 @@ async function deployForeign(homeBridgeAddress) {
     rewardAccounts: [],
     owner: FOREIGN_VALIDATORS_OWNER,
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -139,7 +142,8 @@ async function deployForeign(homeBridgeAddress) {
     proxy: storageValidatorsForeign,
     newOwner: FOREIGN_UPGRADEABLE_ADMIN,
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -167,7 +171,8 @@ async function deployForeign(homeBridgeAddress) {
     implementationAddress: foreignBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
   nonce++
 
@@ -186,7 +191,8 @@ async function deployForeign(homeBridgeAddress) {
     proxy: foreignBridgeStorage,
     newOwner: FOREIGN_UPGRADEABLE_ADMIN,
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: FOREIGN_CHAIN_ID
   })
 
   console.log('\nForeign Deployment Bridge completed\n')

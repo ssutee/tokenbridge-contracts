@@ -11,7 +11,7 @@ const {
   transferProxyOwnership,
   assertStateWithRetry
 } = require('../deploymentUtils')
-const { web3Home, deploymentPrivateKey, HOME_RPC_URL } = require('../web3')
+const { web3Home, deploymentPrivateKey, HOME_RPC_URL, HOME_CHAIN_ID } = require('../web3')
 const {
   homeContracts: {
     EternalStorageProxy,
@@ -139,7 +139,8 @@ async function initializeBridge({ validatorsBridge, bridge, initialNonce }) {
     nonce,
     to: bridge.options.address,
     privateKey: deploymentPrivateKey,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   if (txInitializeHomeBridge.status) {
     assert.strictEqual(Web3Utils.hexToNumber(txInitializeHomeBridge.status), 1, 'Transaction Failed')
@@ -176,7 +177,8 @@ async function deployHome() {
     implementationAddress: bridgeValidatorsHome.options.address,
     version: '1',
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -190,7 +192,8 @@ async function deployHome() {
     rewardAccounts: VALIDATORS_REWARD_ACCOUNTS,
     owner: HOME_VALIDATORS_OWNER,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -199,7 +202,8 @@ async function deployHome() {
     proxy: storageValidatorsHome,
     newOwner: HOME_UPGRADEABLE_ADMIN,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -225,7 +229,8 @@ async function deployHome() {
     implementationAddress: homeBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -241,7 +246,8 @@ async function deployHome() {
     proxy: homeBridgeStorage,
     newOwner: HOME_UPGRADEABLE_ADMIN,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
 
   console.log('\nHome Deployment Bridge completed\n')

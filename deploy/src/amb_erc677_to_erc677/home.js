@@ -1,6 +1,6 @@
 const assert = require('assert')
 const Web3Utils = require('web3-utils')
-const { web3Home, HOME_RPC_URL, deploymentPrivateKey } = require('../web3')
+const { web3Home, HOME_RPC_URL, deploymentPrivateKey, HOME_CHAIN_ID } = require('../web3')
 const {
   deployContract,
   privateKeyToAddress,
@@ -56,7 +56,8 @@ async function deployHome() {
     implementationAddress: homeBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -78,7 +79,8 @@ async function deployHome() {
     contract: erc677token,
     bridgeAddress: homeBridgeStorage.options.address,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -92,7 +94,8 @@ async function deployHome() {
       nonce,
       to: erc677token.options.address,
       privateKey: deploymentPrivateKey,
-      url: HOME_RPC_URL
+      url: HOME_RPC_URL,
+      chainId: HOME_CHAIN_ID
     })
     if (setBlockRewardContract.status) {
       assert.strictEqual(Web3Utils.hexToNumber(setBlockRewardContract.status), 1, 'Transaction Failed')
@@ -108,7 +111,8 @@ async function deployHome() {
       nonce,
       to: erc677token.options.address,
       privateKey: deploymentPrivateKey,
-      url: HOME_RPC_URL
+      url: HOME_RPC_URL,
+      chainId: HOME_CHAIN_ID
     })
     if (setStakingContract.status) {
       assert.strictEqual(Web3Utils.hexToNumber(setStakingContract.status), 1, 'Transaction Failed')
@@ -123,7 +127,8 @@ async function deployHome() {
     contract: erc677token,
     newOwner: homeBridgeStorage.options.address,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
 
   console.log('\nHome part of ERC677-to-ERC677 bridge deployed\n')

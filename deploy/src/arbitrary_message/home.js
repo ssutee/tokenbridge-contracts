@@ -27,7 +27,8 @@ const {
   HOME_VALIDATORS_OWNER,
   HOME_UPGRADEABLE_ADMIN,
   HOME_MAX_AMOUNT_PER_TX,
-  HOME_REQUIRED_BLOCK_CONFIRMATIONS
+  HOME_REQUIRED_BLOCK_CONFIRMATIONS,
+  HOME_CHAIN_ID
 } = env
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -59,7 +60,8 @@ async function initializeBridge({ validatorsBridge, bridge, initialNonce }) {
     nonce,
     to: bridge.options.address,
     privateKey: deploymentPrivateKey,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   if (txInitializeHomeBridge.status) {
     assert.strictEqual(Web3Utils.hexToNumber(txInitializeHomeBridge.status), 1, 'Transaction Failed')
@@ -100,7 +102,8 @@ async function deployHome() {
     implementationAddress: bridgeValidatorsHome.options.address,
     version: '1',
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -114,7 +117,8 @@ async function deployHome() {
     rewardAccounts: [],
     owner: HOME_VALIDATORS_OWNER,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -123,7 +127,8 @@ async function deployHome() {
     proxy: storageValidatorsHome,
     newOwner: HOME_UPGRADEABLE_ADMIN,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -149,7 +154,8 @@ async function deployHome() {
     implementationAddress: homeBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
   nonce++
 
@@ -165,7 +171,8 @@ async function deployHome() {
     proxy: homeBridgeStorage,
     newOwner: HOME_UPGRADEABLE_ADMIN,
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: HOME_CHAIN_ID
   })
 
   console.log('\nDeployment of Arbitrary Message Bridge at Home completed\n')
