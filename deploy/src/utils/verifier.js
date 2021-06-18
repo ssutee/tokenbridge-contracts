@@ -72,9 +72,12 @@ const sendVerifyRequestBlockscout = async (contractPath, options) => {
 }
 
 const getExplorerType = apiUrl =>
-  apiUrl && apiUrl.includes('etherscan') ? EXPLORER_TYPES.ETHERSCAN : EXPLORER_TYPES.BLOCKSCOUT
+  apiUrl && apiUrl.includes('scan') && !apiUrl.includes('bkc') ? EXPLORER_TYPES.ETHERSCAN : EXPLORER_TYPES.BLOCKSCOUT
 
 const verifyContract = async (contract, params, type) => {
+  console.log(contract)
+  console.log(params)
+  console.log(type)
   try {
     let result
     if (type === EXPLORER_TYPES.ETHERSCAN) {
