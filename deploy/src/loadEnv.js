@@ -10,7 +10,7 @@ const homePrefix = 'HOME'
 const foreignPrefix = 'FOREIGN'
 
 // Validations and constants
-const validBridgeModes = ['ERC_TO_NATIVE', 'ARBITRARY_MESSAGE', 'AMB_ERC_TO_ERC']
+const validBridgeModes = ['ERC_TO_NATIVE', 'ARBITRARY_MESSAGE', 'AMB_ERC_TO_ERC', 'AMB_ERC_TO_ERC_EX']
 const validRewardModes = ['false', 'ONE_DIRECTION', 'BOTH_DIRECTIONS']
 const validFeeManagerTypes = ['BRIDGE_VALIDATORS_REWARD', 'POSDAO_REWARD']
 const bigNumValidator = envalid.makeValidator(x => toBN(x))

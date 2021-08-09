@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const env = require('./src/loadEnv')
 
-const { BRIDGE_MODE, ERC20_TOKEN_ADDRESS } = env
+const { BRIDGE_MODE, ERC20_TOKEN_ADDRESS, ERC677_HOME_TOKEN_ADDRESS } = env
 
 const deployResultsPath = path.join(__dirname, './bridgeDeploymentResults.json')
 
@@ -80,6 +80,35 @@ async function deployAMBErcToErc() {
   })
 }
 
+async function deployAMBErcToErcEx() {
+    const preDeploy = require('./src/amb_erc677_to_erc677ex/preDeploy')
+    const deployHome = require('./src/amb_erc677_to_erc677ex/home')
+    const deployForeign = require('./src/amb_erc677_to_erc677ex/foreign')
+    const initialize = require('./src/amb_erc677_to_erc677ex/initialize')
+    await preDeploy()
+    const { homeBridgeMediator, bridgeableErc677 } = await deployHome()
+    const { foreignBridgeMediator } = await deployForeign()
+    await initialize({
+      homeBridge: homeBridgeMediator.address,
+      foreignBridge: foreignBridgeMediator.address,
+      homeErc677: ERC677_HOME_TOKEN_ADDRESS
+    })
+    console.log('\nDeployment has been completed.\n\n')
+    console.log(`[   Home  ] Bridge Mediator: ${homeBridgeMediator.address}`)
+    console.log(`[   Home  ] ERC677 Bridgeable Token: ${ERC677_HOME_TOKEN_ADDRESS}`)
+    console.log(`[ Foreign ] Bridge Mediator: ${foreignBridgeMediator.address}`)
+    console.log(`[ Foreign ] ERC677 Token: ${ERC20_TOKEN_ADDRESS}`)
+    writeDeploymentResults({
+      homeBridge: {
+        homeBridgeMediator,
+        ERC677_HOME_TOKEN_ADDRESS
+      },
+      foreignBridge: {
+        foreignBridgeMediator
+      }
+    })
+  }
+
 async function main() {
   console.log(`Bridge mode: ${BRIDGE_MODE}`)
   switch (BRIDGE_MODE) {
@@ -92,9 +121,12 @@ async function main() {
     case 'AMB_ERC_TO_ERC':
       await deployAMBErcToErc()
       break
+    case 'AMB_ERC_TO_ERC_EX':
+      await deployAMBErcToErcEx()
+      break
     default:
       console.log(BRIDGE_MODE)
-      throw new Error('Please specify BRIDGE_MODE: ERC_TO_NATIVE or ARBITRARY_MESSAGE or AMB_ERC_TO_ERC')
+      throw new Error('Please specify BRIDGE_MODE: ERC_TO_NATIVE or ARBITRARY_MESSAGE or AMB_ERC_TO_ERC or AMB_ERC_TO_ERC_EX')
   }
 }
 
