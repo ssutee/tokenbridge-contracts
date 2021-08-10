@@ -19,6 +19,7 @@ function getContracts() {
     HomeAMB: require(`../../build/${buildPath}/HomeAMB.json`),
     ForeignAMB: require(`../../build/${buildPath}/ForeignAMB`),
     HomeAMBErc677ToErc677: require(`../../build/${buildPath}/HomeAMBErc677ToErc677.json`),
+    HomeAMBErc20ToErc20: require(`../../build/${buildPath}/HomeAMBErc20ToErc20.json`),
     ForeignAMBErc677ToErc677: require(`../../build/${buildPath}/ForeignAMBErc677ToErc677.json`)
   }
 }

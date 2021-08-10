@@ -61,28 +61,6 @@ async function deployHome() {
   })
   nonce++
 
-//   console.log('\n[Home] deploying Bridgeable token')
-//   const erc677Contract = DEPLOY_REWARDABLE_TOKEN ? ERC677BridgeTokenRewardable : ERC677BridgeTokenPermittable
-//   const chainId = await web3Home.eth.getChainId()
-//   assert.strictEqual(chainId > 0, true, 'Invalid chain ID')
-//   const args = [BRIDGEABLE_TOKEN_NAME, BRIDGEABLE_TOKEN_SYMBOL, BRIDGEABLE_TOKEN_DECIMALS, chainId]
-//   const erc677token = await deployContract(
-//     erc677Contract,
-//     args,
-//     { from: DEPLOYMENT_ACCOUNT_ADDRESS, network: 'home', nonce }
-//   )
-//   nonce++
-//   console.log('[Home] Bridgeable Token: ', erc677token.options.address)
-
-//   console.log('\n[Home] Set Bridge Mediator contract on Bridgeable token')
-//   await setBridgeContract({
-//     contract: erc677token,
-//     bridgeAddress: homeBridgeStorage.options.address,
-//     nonce,
-//     url: HOME_RPC_URL
-//   })
-//   nonce++
-
   if (DEPLOY_REWARDABLE_TOKEN) {
     console.log('\n[Home] Set BlockReward contract on Bridgeable token contract')
     const setBlockRewardContractData = await erc677token.methods
@@ -118,14 +96,6 @@ async function deployHome() {
     }
     nonce++
   }
-
-//   console.log('[Home] Transferring ownership of Bridgeable token to Bridge Mediator contract')
-//   await transferOwnership({
-//     contract: erc677token,
-//     newOwner: homeBridgeStorage.options.address,
-//     nonce,
-//     url: HOME_RPC_URL
-//   })
 
   console.log('\nHome part of ERC677-to-ERC677 bridge deployed\n')
   return {
