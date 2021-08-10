@@ -24,7 +24,7 @@ const {
 const {
   homeContracts: {
     EternalStorageProxy,
-    HomeAMBErc677ToErc677: HomeBridge,
+    HomeAMBErc20ToErc20FixedFee: HomeBridge,
     ERC677BridgeTokenPermittable,
     ERC677BridgeTokenRewardable
   }

@@ -32,9 +32,9 @@ const {
   DEPLOYMENT_ACCOUNT_PRIVATE_KEY,
   FOREIGN_TO_HOME_DECIMAL_SHIFT,
   HOME_TRANSFER_FEE_ADDRESS,
-  HOME_TRANSFER_FEE_PERCENT,
+  HOME_TRANSFER_FEE_AMOUNT,
   FOREIGN_TRANSFER_FEE_ADDRESS,
-  FOREIGN_TRANSFER_FEE_PERCENT
+  FOREIGN_TRANSFER_FEE_AMOUNT
 } = require('../loadEnv')
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -57,7 +57,7 @@ async function initialize({
     requestGasLimit,
     foreignToHomeDecimalShift,
     owner,
-    transferFeePercent,
+    transferFeeAmount,
     transferFeeAddress
   },
   upgradeableAdmin,
@@ -78,7 +78,7 @@ async function initialize({
     FOREIGN_TO_HOME_DECIMAL_SHIFT: ${foreignToHomeDecimalShift},
     MEDIATOR_REQUEST_GAS_LIMIT : ${requestGasLimit}, 
     OWNER: ${owner},
-    TRANSFER_FEE_PERCENT: ${transferFeePercent},
+    TRANSFER_FEE_AMOUNT: ${transferFeeAmount},
     TRANSFER_FEE_ACCOUNT: ${transferFeeAddress}
   `)
 
@@ -92,7 +92,7 @@ async function initialize({
       requestGasLimit,
       foreignToHomeDecimalShift,
       owner,
-      transferFeePercent,
+      transferFeeAmount,
       transferFeeAddress
     )
     .encodeABI()
@@ -143,7 +143,7 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       requestGasLimit: HOME_MEDIATOR_REQUEST_GAS_LIMIT,
       foreignToHomeDecimalShift,
       owner: HOME_BRIDGE_OWNER,
-      transferFeePercent: HOME_TRANSFER_FEE_PERCENT,
+      transferFeeAmount: HOME_TRANSFER_FEE_AMOUNT,
       transferFeeAddress: HOME_TRANSFER_FEE_ADDRESS
     },
     upgradeableAdmin: HOME_UPGRADEABLE_ADMIN,
@@ -169,7 +169,7 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       requestGasLimit: FOREIGN_MEDIATOR_REQUEST_GAS_LIMIT,
       foreignToHomeDecimalShift,
       owner: FOREIGN_BRIDGE_OWNER,
-      transferFeePercent: FOREIGN_TRANSFER_FEE_PERCENT,
+      transferFeeAmount: FOREIGN_TRANSFER_FEE_AMOUNT,
       transferFeeAddress: FOREIGN_TRANSFER_FEE_ADDRESS
     },
     upgradeableAdmin: FOREIGN_UPGRADEABLE_ADMIN,
