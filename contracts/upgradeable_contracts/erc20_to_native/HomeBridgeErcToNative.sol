@@ -22,10 +22,11 @@ contract HomeBridgeErcToNative is
 {
     bytes32 internal constant TOTAL_BURNT_COINS = 0x17f187b2e5d1f8770602b32c1159b85c9600859277fae1eaa9982e9bcf63384c; // keccak256(abi.encodePacked("totalBurntCoins"))
 
-    function() public payable {
-        require(msg.data.length == 0);
-        nativeTransfer(msg.sender);
-    }
+    // Disable ForeignBridge
+    // function() public payable {
+    //     require(msg.data.length == 0);
+    //     nativeTransfer(msg.sender);
+    // }
 
     function nativeTransfer(address _receiver) internal {
         require(msg.value > 0);
@@ -48,9 +49,10 @@ contract HomeBridgeErcToNative is
         emit UserRequestForSignature(_receiver, valueToTransfer);
     }
 
-    function relayTokens(address _receiver) external payable {
-        nativeTransfer(_receiver);
-    }
+    // Disable ForeignBridge
+    // function relayTokens(address _receiver) external payable {
+    //     nativeTransfer(_receiver);
+    // }
 
     function initialize(
         address _validatorContract,
