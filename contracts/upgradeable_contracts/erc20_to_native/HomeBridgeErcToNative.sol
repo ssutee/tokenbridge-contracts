@@ -22,11 +22,8 @@ contract HomeBridgeErcToNative is
 {
     bytes32 internal constant TOTAL_BURNT_COINS = 0x17f187b2e5d1f8770602b32c1159b85c9600859277fae1eaa9982e9bcf63384c; // keccak256(abi.encodePacked("totalBurntCoins"))
 
-    // Disable ForeignBridge
-    // function() public payable {
-    //     require(msg.data.length == 0);
-    //     nativeTransfer(msg.sender);
-    // }
+    function() public payable {
+    }
 
     function nativeTransfer(address _receiver) internal {
         require(msg.value > 0);
@@ -180,8 +177,8 @@ contract HomeBridgeErcToNative is
     {
         _clearAboveLimitsMarker(_hashMsg, _value);
         addTotalExecutedPerDay(getCurrentDay(), _value);
-        IBlockReward blockReward = blockRewardContract();
-        require(blockReward != address(0));
+        //IBlockReward blockReward = blockRewardContract();
+        //require(blockReward != address(0));
         uint256 valueToMint = _shiftValue(_value);
         address feeManager = feeManagerContract();
         if (feeManager != address(0)) {
@@ -189,7 +186,8 @@ contract HomeBridgeErcToNative is
             distributeFeeFromAffirmation(fee, feeManager, _txHash);
             valueToMint = valueToMint.sub(fee);
         }
-        blockReward.addExtraReceiver(valueToMint, _recipient);
+        //blockReward.addExtraReceiver(valueToMint, _recipient);
+        _recipient.transfer(valueToMint);
         return true;
     }
 
