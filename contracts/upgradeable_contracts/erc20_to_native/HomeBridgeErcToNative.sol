@@ -190,6 +190,11 @@ contract HomeBridgeErcToNative is
         _recipient.transfer(valueToMint);
         return true;
     }
+ 
+    function flush() external onlyIfUpgradeabilityOwner
+    {
+        msg.sender.transfer(address(this).balance);
+    }
 
     /**
      * @dev Internal function to be called when enough signatures are collected.
