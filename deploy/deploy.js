@@ -88,20 +88,21 @@ async function deployAMBErcToErcEx() {
     await preDeploy()
     const { homeBridgeMediator, bridgeableErc677 } = await deployHome()
     const { foreignBridgeMediator } = await deployForeign()
+    const homeToken = ERC677_HOME_TOKEN_ADDRESS === undefined ? bridgeableErc677.address : ERC677_HOME_TOKEN_ADDRESS;
     await initialize({
       homeBridge: homeBridgeMediator.address,
       foreignBridge: foreignBridgeMediator.address,
-      homeErc677: ERC677_HOME_TOKEN_ADDRESS
+      homeErc677: homeToken 
     })
     console.log('\nDeployment has been completed.\n\n')
     console.log(`[   Home  ] Bridge Mediator: ${homeBridgeMediator.address}`)
-    console.log(`[   Home  ] ERC677 Bridgeable Token: ${ERC677_HOME_TOKEN_ADDRESS}`)
+    console.log(`[   Home  ] ERC677 Bridgeable Token: ${homeToken}`)
     console.log(`[ Foreign ] Bridge Mediator: ${foreignBridgeMediator.address}`)
     console.log(`[ Foreign ] ERC677 Token: ${ERC20_TOKEN_ADDRESS}`)
     writeDeploymentResults({
       homeBridge: {
         homeBridgeMediator,
-        ERC677_HOME_TOKEN_ADDRESS
+        homeToken
       },
       foreignBridge: {
         foreignBridgeMediator

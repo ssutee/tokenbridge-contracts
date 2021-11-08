@@ -1,6 +1,6 @@
 const assert = require('assert')
 const Web3Utils = require('web3-utils')
-const { web3Home, HOME_RPC_URL, deploymentPrivateKey } = require('../web3')
+const { web3Home, HOME_RPC_URL, deploymentPrivateKey, HOME_CHAIN_ID } = require('../web3')
 const {
   deployContract,
   privateKeyToAddress,
@@ -61,6 +61,33 @@ async function deployHome() {
   })
   nonce++
 
+  let erc677token
+  
+  if (ERC677_HOME_TOKEN_ADDRESS === undefined) {
+    console.log('\n[Home] deploying Bridgeable token')
+    const erc677Contract = DEPLOY_REWARDABLE_TOKEN ? ERC677BridgeTokenRewardable : ERC677BridgeTokenPermittable
+    const chainId = await web3Home.eth.getChainId()
+    assert.strictEqual(chainId > 0, true, 'Invalid chain ID')
+    const args = [BRIDGEABLE_TOKEN_NAME, BRIDGEABLE_TOKEN_SYMBOL, BRIDGEABLE_TOKEN_DECIMALS, chainId]
+    erc677token = await deployContract(
+      erc677Contract,
+      args,
+      { from: DEPLOYMENT_ACCOUNT_ADDRESS, network: 'home', nonce }
+    )
+    nonce++
+    console.log('[Home] Bridgeable Token: ', erc677token.options.address)
+  
+    console.log('\n[Home] Set Bridge Mediator contract on Bridgeable token')
+    await setBridgeContract({
+      contract: erc677token,
+      bridgeAddress: homeBridgeStorage.options.address,
+      nonce,
+      url: HOME_RPC_URL,
+      chainId: HOME_CHAIN_ID
+    })
+    nonce++
+  }
+ 
   if (DEPLOY_REWARDABLE_TOKEN) {
     console.log('\n[Home] Set BlockReward contract on Bridgeable token contract')
     const setBlockRewardContractData = await erc677token.methods
@@ -96,11 +123,22 @@ async function deployHome() {
     }
     nonce++
   }
-
+  
+  if (ERC677_HOME_TOKEN_ADDRESS === undefined) {
+    console.log('[Home] Transferring ownership of Bridgeable token to Bridge Mediator contract')
+    await transferOwnership({
+      contract: erc677token,
+      newOwner: homeBridgeStorage.options.address,
+      nonce,
+      url: HOME_RPC_URL,
+      chainId: HOME_CHAIN_ID
+    })
+  }
+  
   console.log('\nHome part of ERC677-to-ERC677 bridge deployed\n')
   return {
     homeBridgeMediator: { address: homeBridgeStorage.options.address },
-    bridgeableErc677: { address: ERC677_HOME_TOKEN_ADDRESS }
+    bridgeableErc677: { address: ERC677_HOME_TOKEN_ADDRESS === undefined ? erc677token.options.address : ERC677_HOME_TOKEN_ADDRESS  }
   }
 }
 
