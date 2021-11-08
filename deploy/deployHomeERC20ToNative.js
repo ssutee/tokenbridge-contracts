@@ -1,3 +1,5 @@
+const env = require('./src/loadEnv')
+
 const {
   deployContract,
   privateKeyToAddress,
