@@ -23,33 +23,34 @@ contract HomeBridgeErcToNative is
     bytes32 internal constant TOTAL_BURNT_COINS = 0x17f187b2e5d1f8770602b32c1159b85c9600859277fae1eaa9982e9bcf63384c; // keccak256(abi.encodePacked("totalBurntCoins"))
 
     function() public payable {
+        require(msg.data.length == 0);
+        nativeTransfer(msg.sender);
     }
 
     function nativeTransfer(address _receiver) internal {
         require(msg.value > 0);
         require(withinLimit(msg.value));
-        IBlockReward blockReward = blockRewardContract();
-        uint256 totalMinted = blockReward.mintedTotallyByBridge(address(this));
-        uint256 totalBurnt = totalBurntCoins();
-        require(msg.value <= totalMinted.sub(totalBurnt));
+        // IBlockReward blockReward = blockRewardContract();
+        // uint256 totalMinted = blockReward.mintedTotallyByBridge(address(this));
+        // uint256 totalBurnt = totalBurntCoins();
+        // require(msg.value <= totalMinted.sub(totalBurnt));
         addTotalSpentPerDay(getCurrentDay(), msg.value);
         uint256 valueToTransfer = msg.value;
-        address feeManager = feeManagerContract();
-        uint256 valueToBurn = msg.value;
-        if (feeManager != address(0)) {
-            uint256 fee = calculateFee(valueToTransfer, false, feeManager, HOME_FEE);
-            valueToTransfer = valueToTransfer.sub(fee);
-            valueToBurn = getAmountToBurn(valueToBurn);
-        }
-        setTotalBurntCoins(totalBurnt.add(valueToBurn));
-        address(0).transfer(valueToBurn);
+        // address feeManager = feeManagerContract();
+        // uint256 valueToBurn = msg.value;
+        // if (feeManager != address(0)) {
+        //     uint256 fee = calculateFee(valueToTransfer, false, feeManager, HOME_FEE);
+        //     valueToTransfer = valueToTransfer.sub(fee);
+        //     valueToBurn = getAmountToBurn(valueToBurn);
+        // }
+        // setTotalBurntCoins(totalBurnt.add(valueToBurn));
+        // address(0).transfer(valueToBurn);
         emit UserRequestForSignature(_receiver, valueToTransfer);
     }
 
-    // Disable ForeignBridge
-    // function relayTokens(address _receiver) external payable {
-    //     nativeTransfer(_receiver);
-    // }
+    function relayTokens(address _receiver) external payable {
+        nativeTransfer(_receiver);
+    }
 
     function initialize(
         address _validatorContract,
