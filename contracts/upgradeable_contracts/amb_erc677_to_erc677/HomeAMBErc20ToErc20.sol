@@ -31,7 +31,7 @@ contract HomeAMBErc20ToErc20 is BasicAMBErc677ToErc677 {
      */
     function bridgeSpecificActionsOnTokenTransfer(ERC677 _token, address _from, uint256 _value, bytes _data) internal {
         if (!lock()) {
-            IBurnableMintableERC20Token(_token).burn(address(this), _value);
+            IBurnableMintableERC20Token(_token).burn(_value);
             passMessage(_from, chooseReceiver(_from, _data), _value);
         }
     }
