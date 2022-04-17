@@ -60,7 +60,6 @@ contract HomeAMBErc20ToNativeFixedFee is BasicAMBErc677ToErc677FixedFee {
 
     /**
      * @dev Executes action on withdrawal of bridged tokens
-     * @param _token address of token contract
      * @param _from address of tokens sender
      * @param _value requsted amount of bridged tokens
      * @param _data alternative receiver, if specified
