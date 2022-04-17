@@ -65,7 +65,7 @@ contract HomeAMBErc20ToNativeFixedFee is BasicAMBErc677ToErc677FixedFee {
      * @param _value requsted amount of bridged tokens
      * @param _data alternative receiver, if specified
      */
-    function bridgeSpecificActionsOnTokenTransfer(ERC677 _token, address _from, uint256 _value, bytes _data) internal {
+    function bridgeSpecificActionsOnTokenTransfer(ERC677, address _from, uint256 _value, bytes _data) internal {
         if (!lock()) {
             passMessage(_from, chooseReceiver(_from, _data), _value);
         }
