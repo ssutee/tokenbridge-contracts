@@ -41,4 +41,4 @@ ${FLATTENER} ${BRIDGE_CONTRACTS_DIR}/amb_erc677_to_erc677/ForeignAMBErc677ToErc6
 ${FLATTENER} ${BRIDGE_CONTRACTS_DIR}/amb_erc677_to_erc677/HomeAMBErc20ToErc20.sol > flats/amb_erc677_to_erc677/HomeAMBErc20ToErc20_flat.sol
 ${FLATTENER} ${BRIDGE_CONTRACTS_DIR}/amb_erc677_to_erc677/ForeignAMBErc677ToErc677FixedFee.sol > flats/amb_erc677_to_erc677/ForeignAMBErc677ToErc677FixedFee_flat.sol
 ${FLATTENER} ${BRIDGE_CONTRACTS_DIR}/amb_erc677_to_erc677/HomeAMBErc20ToErc20FixedFee.sol > flats/amb_erc677_to_erc677/HomeAMBErc20ToErc20FixedFee_flat.sol
-
+${FLATTENER} ${BRIDGE_CONTRACTS_DIR}/amb_erc677_to_erc677/HomeAMBErc20ToNativeFixedFee.sol > flats/amb_erc677_to_erc677/HomeAMBErc20ToNativeFixedFee_flat.sol
