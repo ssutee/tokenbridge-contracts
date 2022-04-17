@@ -15,7 +15,11 @@ contract HomeAMBErc20ToNativeFixedFee is BasicAMBErc677ToErc677FixedFee {
         require(msg.data.length == 0);
     }
 
-    function relayTokens(address _receiver, uint256 _value) external payable {
+    function relayTokens(address, uint256) external {
+        revert("disable");
+    }
+
+    function relayNativeTokens(address _receiver, uint256 _value) external payable {
         // This lock is to prevent calling passMessage twice if a ERC677 token is used.
         // When transferFrom is called, after the transfer, the ERC677 token will call onTokenTransfer from this contract
         // which will call passMessage.
