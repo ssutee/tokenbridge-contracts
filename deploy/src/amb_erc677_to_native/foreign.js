@@ -10,6 +10,8 @@ const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVAT
 async function deployForeign() {
   let nonce = await web3Foreign.eth.getTransactionCount(DEPLOYMENT_ACCOUNT_ADDRESS)
 
+  const chainId = await web3Foreign.eth.getChainId()
+
   console.log('\n[Foreign] Deploying Bridge Mediator storage\n')
   const foreignBridgeStorage = await deployContract(EternalStorageProxy, [], {
     from: DEPLOYMENT_ACCOUNT_ADDRESS,
@@ -34,7 +36,8 @@ async function deployForeign() {
     implementationAddress: foreignBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: FOREIGN_RPC_URL
+    url: FOREIGN_RPC_URL,
+    chainId: chainId
   })
 
   console.log('\nForeign part of ERC677-to-ERC677 bridge deployed\n')

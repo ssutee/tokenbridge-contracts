@@ -65,6 +65,8 @@ async function initialize({
 }) {
   let nonce = await web3.eth.getTransactionCount(DEPLOYMENT_ACCOUNT_ADDRESS)
 
+  const chainId = await web3.eth.getChainId()
+
   const contract = new web3.eth.Contract(abi, address)
   console.log(`
     AMB contract: ${bridgeContract}, 
@@ -101,7 +103,8 @@ async function initialize({
     nonce,
     to: address,
     privateKey: deploymentPrivateKey,
-    url
+    url,
+    chainId: chainId
   })
 
   if (txInitialize.status) {
@@ -117,7 +120,8 @@ async function initialize({
     proxy,
     newOwner: upgradeableAdmin,
     nonce,
-    url
+    url,
+    chainId: chainId
   })
 }
 

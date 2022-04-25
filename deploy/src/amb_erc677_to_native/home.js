@@ -35,6 +35,8 @@ const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVAT
 async function deployHome() {
   let nonce = await web3Home.eth.getTransactionCount(DEPLOYMENT_ACCOUNT_ADDRESS)
 
+  const chainId = await web3Home.eth.getChainId()
+
   console.log('\n[Home] Deploying Bridge Mediator storage\n')
   const homeBridgeStorage = await deployContract(EternalStorageProxy, [], {
     from: DEPLOYMENT_ACCOUNT_ADDRESS,
@@ -57,7 +59,8 @@ async function deployHome() {
     implementationAddress: homeBridgeImplementation.options.address,
     version: '1',
     nonce,
-    url: HOME_RPC_URL
+    url: HOME_RPC_URL,
+    chainId: chainId
   })
   nonce++
 
@@ -66,7 +69,6 @@ async function deployHome() {
   if (ERC677_HOME_TOKEN_ADDRESS === undefined) {
     console.log('\n[Home] deploying Bridgeable token')
     const erc677Contract = DEPLOY_REWARDABLE_TOKEN ? ERC677BridgeTokenRewardable : ERC677BridgeTokenPermittable
-    const chainId = await web3Home.eth.getChainId()
     assert.strictEqual(chainId > 0, true, 'Invalid chain ID')
     const args = [BRIDGEABLE_TOKEN_NAME, BRIDGEABLE_TOKEN_SYMBOL, BRIDGEABLE_TOKEN_DECIMALS, chainId]
     erc677token = await deployContract(
