@@ -68,8 +68,6 @@ async function initialize({
 }) {
   let nonce = await web3.eth.getTransactionCount(DEPLOYMENT_ACCOUNT_ADDRESS)
 
-  const chainId = await web3.eth.getChainId()
-
   const contract = new web3.eth.Contract(abi, address)
   console.log(`
     AMB contract: ${bridgeContract}, 

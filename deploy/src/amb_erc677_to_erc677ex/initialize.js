@@ -2,8 +2,8 @@ const Web3Utils = require('web3-utils')
 const assert = require('assert')
 const { web3Home, HOME_RPC_URL, web3Foreign, FOREIGN_RPC_URL, deploymentPrivateKey } = require('../web3')
 const {
-  homeContracts: { EternalStorageProxy, HomeAMBErc677ToErc677 },
-  foreignContracts: { EternalStorageProxy: ForeignEternalStorageProxy, ForeignAMBErc677ToErc677 }
+  homeContracts: { EternalStorageProxy, HomeAMBErc20ToErc20FixedFee },
+  foreignContracts: { EternalStorageProxy: ForeignEternalStorageProxy, ForeignAMBErc677ToErc677FixedFee }
 } = require('../loadContracts')
 const {
   privateKeyToAddress,
@@ -65,6 +65,8 @@ async function initialize({
 }) {
   let nonce = await web3.eth.getTransactionCount(DEPLOYMENT_ACCOUNT_ADDRESS)
 
+  const chainId = await web3.eth.getChainId()
+
   const contract = new web3.eth.Contract(abi, address)
   console.log(`
     AMB contract: ${bridgeContract}, 
@@ -101,7 +103,8 @@ async function initialize({
     nonce,
     to: address,
     privateKey: deploymentPrivateKey,
-    url
+    url,
+    chainId: chainId
   })
 
   if (txInitialize.status) {
@@ -117,7 +120,8 @@ async function initialize({
     proxy,
     newOwner: upgradeableAdmin,
     nonce,
-    url
+    url,
+    chainId: chainId
   })
 }
 
@@ -129,7 +133,7 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
     web3: web3Home,
     url: HOME_RPC_URL,
     address: homeBridge,
-    abi: HomeAMBErc677ToErc677.abi,
+    abi: HomeAMBErc20ToErc20FixedFee.abi,
     proxyAbi: EternalStorageProxy.abi,
     params: {
       bridgeContract: HOME_AMB_BRIDGE,
@@ -155,7 +159,7 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
     web3: web3Foreign,
     url: FOREIGN_RPC_URL,
     address: foreignBridge,
-    abi: ForeignAMBErc677ToErc677.abi,
+    abi: ForeignAMBErc677ToErc677FixedFee.abi,
     proxyAbi: ForeignEternalStorageProxy.abi,
     params: {
       bridgeContract: FOREIGN_AMB_BRIDGE,
@@ -175,6 +179,7 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
     upgradeableAdmin: FOREIGN_UPGRADEABLE_ADMIN,
     sendRawTx: sendRawTxForeign
   })
+
 }
 
 module.exports = initializeBridges
