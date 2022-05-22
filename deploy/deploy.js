@@ -140,6 +140,36 @@ async function deployAMBErcToErcEx() {
     })
   }  
 
+  async function deployAMBNativeToNative() {
+    const preDeploy = require('./src/amb_native_to_native/preDeploy')
+    const deployHome = require('./src/amb_native_to_native/home')
+    const deployForeign = require('./src/amb_native_to_native/foreign')
+    const initialize = require('./src/amb_native_to_native/initialize')
+    await preDeploy()
+    const { homeBridgeMediator, bridgeableErc677 } = await deployHome()
+    const { foreignBridgeMediator } = await deployForeign()
+    const homeToken = ERC677_HOME_TOKEN_ADDRESS === undefined ? bridgeableErc677.address : ERC677_HOME_TOKEN_ADDRESS;
+    await initialize({
+      homeBridge: homeBridgeMediator.address,
+      foreignBridge: foreignBridgeMediator.address,
+      homeErc677: homeToken 
+    })
+    console.log('\nDeployment has been completed.\n\n')
+    console.log(`[   Home  ] Bridge Mediator: ${homeBridgeMediator.address}`)
+    console.log(`[   Home  ] ERC677 Bridgeable Token: ${homeToken}`)
+    console.log(`[ Foreign ] Bridge Mediator: ${foreignBridgeMediator.address}`)
+    console.log(`[ Foreign ] ERC677 Token: ${ERC20_TOKEN_ADDRESS}`)
+    writeDeploymentResults({
+      homeBridge: {
+        homeBridgeMediator,
+        homeToken
+      },
+      foreignBridge: {
+        foreignBridgeMediator
+      }
+    })
+  }  
+
 async function main() {
   console.log(`Bridge mode: ${BRIDGE_MODE}`)
   switch (BRIDGE_MODE) {
@@ -157,6 +187,9 @@ async function main() {
       break
     case 'AMB_ERC_TO_NATIVE':
       await deployAMBErcToNative()
+      break
+    case 'AMB_NATIVE_TO_NATIVE':
+      await deployAMBNativeToNative()
       break
     default:
       console.log(BRIDGE_MODE)
