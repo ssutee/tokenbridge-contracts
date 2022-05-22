@@ -5,8 +5,8 @@ import "./BasicAMBErc677ToErc677FixedFee.sol";
 import "../../interfaces/IBurnableMintableERC20Token.sol";
 
 /**
-* @title HomeAMBErc20ToErc20
-* @dev Home side implementation for erc20-to-erc20 mediator intended to work on top of AMB bridge.
+* @title HomeAMBErc20ToNativeFixedFee
+* @dev Home side implementation for erc20-to-native mediator intended to work on top of AMB bridge.
 * It is designed to be used as an implementation contract of EternalStorageProxy contract.
 */
 contract HomeAMBErc20ToNativeFixedFee is BasicAMBErc677ToErc677FixedFee {
