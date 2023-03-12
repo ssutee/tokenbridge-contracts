@@ -180,7 +180,8 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       foreignToHomeDecimalShift,
       owner: FOREIGN_BRIDGE_OWNER,
       transferFeeAmount: FOREIGN_TRANSFER_FEE_AMOUNT,
-      transferFeeAddress: FOREIGN_TRANSFER_FEE_ADDRESS
+      transferFeeAddress: FOREIGN_TRANSFER_FEE_ADDRESS,
+      giveawayGas: FOREIGN_GIVEAWAY_GAS
     },
     upgradeableAdmin: FOREIGN_UPGRADEABLE_ADMIN,
     sendRawTx: sendRawTxForeign
