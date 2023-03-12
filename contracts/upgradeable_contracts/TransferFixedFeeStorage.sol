@@ -9,7 +9,7 @@ contract TransferFixedFeeStorage is EternalStorage, Ownable {
     bytes32 internal constant GIVEAWAY_GAS = 0xaefa03585a15a2d3bb35107ef57ea69b9ca53f425c5e864b91db7f1db5f69204; // keccak256(abi.encodePacked("giveawayGas"))
 
     function giveawayGas() public view returns (uint256) {
-        return uintStorage(GIVEAWAY_GAS);
+        return uintStorage[GIVEAWAY_GAS];
     }
 
     function setGiveawayGas(uint256 _giveawayGas) external onlyOwner {
