@@ -119,7 +119,7 @@ contract ForeignAMBErc677ToErc677 is BasicAMBErc677ToErc677, MediatorBalanceStor
     * @param _to address that will receive the locked tokens on this contract.
     */
     function claimTokens(address _token, address _to) external onlyIfUpgradeabilityOwner {
-        require(_token != address(_erc677token()));
+        // require(_token != address(_erc677token()));
         claimValues(_token, _to);
     }
 }
