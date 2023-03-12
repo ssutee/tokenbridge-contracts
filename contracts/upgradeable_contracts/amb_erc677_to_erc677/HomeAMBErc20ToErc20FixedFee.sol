@@ -15,6 +15,11 @@ contract HomeAMBErc20ToErc20FixedFee is BasicAMBErc677ToErc677FixedFee {
      * @param _recipient address of tokens receiver
      * @param _value amount of bridged tokens
      */
+
+    function() public payable {
+        require(msg.data.length == 0);
+    }
+    
     function executeActionOnBridgedTokens(address _recipient, uint256 _value) internal {
         uint256 value = _shiftValue(_value);
         bytes32 _messageId = messageId();
