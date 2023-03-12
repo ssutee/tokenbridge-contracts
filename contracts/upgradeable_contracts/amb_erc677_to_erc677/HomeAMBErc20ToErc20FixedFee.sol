@@ -10,16 +10,16 @@ import "../../interfaces/IBurnableMintableERC20Token.sol";
 * It is designed to be used as an implementation contract of EternalStorageProxy contract.
 */
 contract HomeAMBErc20ToErc20FixedFee is BasicAMBErc677ToErc677FixedFee {
-    /**
-     * @dev Executes action on the request to deposit tokens relayed from the other network
-     * @param _recipient address of tokens receiver
-     * @param _value amount of bridged tokens
-     */
 
     function() public payable {
         require(msg.data.length == 0);
     }
     
+    /**
+     * @dev Executes action on the request to deposit tokens relayed from the other network
+     * @param _recipient address of tokens receiver
+     * @param _value amount of bridged tokens
+     */
     function executeActionOnBridgedTokens(address _recipient, uint256 _value) internal {
         uint256 value = _shiftValue(_value);
         bytes32 _messageId = messageId();
