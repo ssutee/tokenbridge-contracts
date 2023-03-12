@@ -19,6 +19,11 @@ contract HomeAMBErc20ToErc20FixedFee is BasicAMBErc677ToErc677FixedFee {
         uint256 value = _shiftValue(_value);
         bytes32 _messageId = messageId();
         IBurnableMintableERC20Token(erc677token()).mint(_recipient, value);
+
+        if (giveawayGas() != 0) {
+            _recipient.transfer(giveawayGas());
+        }
+
         emit TokensBridged(_recipient, value, _messageId);
     }
 

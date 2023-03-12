@@ -34,7 +34,9 @@ const {
   HOME_TRANSFER_FEE_ADDRESS,
   HOME_TRANSFER_FEE_AMOUNT,
   FOREIGN_TRANSFER_FEE_ADDRESS,
-  FOREIGN_TRANSFER_FEE_AMOUNT
+  FOREIGN_TRANSFER_FEE_AMOUNT,
+  HOME_GIVEAWAY_GAS,
+  FOREIGN_GIVEAWAY_GAS
 } = require('../loadEnv')
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -58,7 +60,8 @@ async function initialize({
     foreignToHomeDecimalShift,
     owner,
     transferFeeAmount,
-    transferFeeAddress
+    transferFeeAddress,
+    giveawayGas
   },
   upgradeableAdmin,
   sendRawTx
@@ -81,7 +84,8 @@ async function initialize({
     MEDIATOR_REQUEST_GAS_LIMIT : ${requestGasLimit}, 
     OWNER: ${owner},
     TRANSFER_FEE_AMOUNT: ${transferFeeAmount},
-    TRANSFER_FEE_ACCOUNT: ${transferFeeAddress}
+    TRANSFER_FEE_ACCOUNT: ${transferFeeAddress},
+    GIVEAWAY_GAS: ${giveawayGas}
   `)
 
   const initializeData = await contract.methods
@@ -95,7 +99,8 @@ async function initialize({
       foreignToHomeDecimalShift,
       owner,
       transferFeeAmount,
-      transferFeeAddress
+      transferFeeAddress,
+      giveawayGas
     )
     .encodeABI()
   const txInitialize = await sendRawTx({
@@ -148,7 +153,8 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       foreignToHomeDecimalShift,
       owner: HOME_BRIDGE_OWNER,
       transferFeeAmount: HOME_TRANSFER_FEE_AMOUNT,
-      transferFeeAddress: HOME_TRANSFER_FEE_ADDRESS
+      transferFeeAddress: HOME_TRANSFER_FEE_ADDRESS,
+      giveawayGas: HOME_GIVEAWAY_GAS
     },
     upgradeableAdmin: HOME_UPGRADEABLE_ADMIN,
     sendRawTx: sendRawTxHome
@@ -174,7 +180,8 @@ async function initializeBridges({ homeBridge, foreignBridge, homeErc677 }) {
       foreignToHomeDecimalShift,
       owner: FOREIGN_BRIDGE_OWNER,
       transferFeeAmount: FOREIGN_TRANSFER_FEE_AMOUNT,
-      transferFeeAddress: FOREIGN_TRANSFER_FEE_ADDRESS
+      transferFeeAddress: FOREIGN_TRANSFER_FEE_ADDRESS,
+      giveawayGas: FOREIGN_GIVEAWAY_GAS
     },
     upgradeableAdmin: FOREIGN_UPGRADEABLE_ADMIN,
     sendRawTx: sendRawTxForeign

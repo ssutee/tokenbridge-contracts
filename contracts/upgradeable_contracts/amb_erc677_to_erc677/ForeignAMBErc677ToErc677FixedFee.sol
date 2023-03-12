@@ -26,6 +26,10 @@ contract ForeignAMBErc677ToErc677FixedFee is BasicAMBErc677ToErc677FixedFee, Med
         _setMediatorBalance(mediatorBalance().sub(value));
         erc677token().safeTransfer(_recipient, value);
 
+        if (giveawayGas() != 0) {
+            _recipient.transfer(giveawayGas());
+        }
+
         emit TokensBridged(_recipient, value, _messageId);
     }
 

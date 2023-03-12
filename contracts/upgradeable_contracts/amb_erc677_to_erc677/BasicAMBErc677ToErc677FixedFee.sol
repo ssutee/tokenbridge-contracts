@@ -40,7 +40,8 @@ contract BasicAMBErc677ToErc677FixedFee is
         int256 _decimalShift,
         address _owner,
         uint256 _transferFeeAmount,
-        address _transferFeeAddress
+        address _transferFeeAddress,
+        uint256 _giveawayGas
     ) public onlyRelevantSender returns (bool) {
         require(!isInitialized());
 
@@ -54,6 +55,7 @@ contract BasicAMBErc677ToErc677FixedFee is
         _setOwner(_owner);
         _setTransferFeeAmount(_transferFeeAmount);
         _setTransferFeeAddress(_transferFeeAddress);
+        _setGiveawayGas(_giveawayGas);
         setInitialize();
 
         return isInitialized();
