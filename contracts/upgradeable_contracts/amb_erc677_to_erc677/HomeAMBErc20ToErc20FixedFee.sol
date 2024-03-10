@@ -3,6 +3,7 @@ pragma solidity 0.4.24;
 
 import "./BasicAMBErc677ToErc677FixedFee.sol";
 import "../../interfaces/IBurnableMintableERC20Token.sol";
+import "../../interfaces/IOwnable.sol";
 
 /**
 * @title HomeAMBErc20ToErc20
@@ -59,5 +60,9 @@ contract HomeAMBErc20ToErc20FixedFee is BasicAMBErc677ToErc677FixedFee {
 
     function executeActionOnFixedTokens(address _recipient, uint256 _value) internal {
         IBurnableMintableERC20Token(erc677token()).mint(_recipient, _value);
+    }
+
+    function transferTokenOwnership(address _newOwner) external onlyIfUpgradeabilityOwner {
+        IOwnable(erc677token()).transferOwnership(_newOwner);
     }
 }
